@@ -1,0 +1,31 @@
+{
+  "done": true,
+  "migration": {
+    "name": "mig_cq40j93ehsuqih1jv880",
+    "operations": [
+      {
+        "add_column": {
+          "table": "notes",
+          "column": {
+            "pk": false,
+            "name": "status",
+            "type": "text",
+            "check": {
+              "name": "notes_xata_string_length_status",
+              "constraint": "LENGTH(\"status\") <= 2048"
+            },
+            "unique": false,
+            "comment": "{\"xata.type\":\"string\"}",
+            "default": "''",
+            "nullable": false
+          }
+        }
+      }
+    ]
+  },
+  "migrationType": "pgroll",
+  "name": "mig_cq40j93ehsuqih1jv880",
+  "parent": "mig_cq40hlf2sq9a55e2baug",
+  "schema": "public",
+  "startedAt": "2024-07-05T14:56:36.48471Z"
+}
