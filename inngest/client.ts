@@ -1,31 +1,36 @@
 import { Inngest, InngestMiddleware } from "inngest";
-// import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from "@prisma/client/edge";
+import { withAccelerate } from "@prisma/extension-accelerate";
 
-// make Prisma available in the Inngest functions
-// const prismaMiddleware = new InngestMiddleware({
-//   name: "Prisma Middleware",
-//   init() {
-//     const prisma = new PrismaClient();
+export function getInngestClient(databaseURL: string) {
+  const prismaMiddleware = new InngestMiddleware({
+    name: "Prisma Middleware",
+    init() {
+      const prisma = new PrismaClient({
+        datasourceUrl: databaseURL,
+      }).$extends(withAccelerate());
 
-//     return {
-//       onFunctionRun(ctx) {
-//         return {
-//           transformInput(ctx) {
-//             return {
-//               // Anything passed via `ctx` will be merged with the function's arguments
-//               ctx: {
-//                 prisma,
-//               },
-//             };
-//           },
-//         };
-//       },
-//     };
-//   },
-// });
+      return {
+        onFunctionRun(ctx) {
+          return {
+            transformInput(ctx) {
+              return {
+                // Anything passed via `ctx` will be merged with the function's arguments
+                ctx: {
+                  prisma,
+                },
+              };
+            },
+          };
+        },
+      };
+    },
+  });
 
-// Create a client to send and receive events
-export const inngest = new Inngest({
-  id: "cherrytext",
-  // middleware: [prismaMiddleware],
-});
+  const inngest = new Inngest({
+    id: "cherrytext",
+    middleware: [prismaMiddleware],
+  });
+
+  return inngest;
+}

@@ -1,4 +1,7 @@
-import type { MetaFunction } from "@remix-run/cloudflare";
+import { LoaderFunctionArgs, json, type MetaFunction } from "@remix-run/cloudflare";
+import { PrismaClient } from '@prisma/client/edge'
+import { withAccelerate } from '@prisma/extension-accelerate'
+import { useLoaderData } from "@remix-run/react";
 
 export const meta: MetaFunction = () => {
   return [
@@ -10,10 +13,20 @@ export const meta: MetaFunction = () => {
   ];
 };
 
+export const loader = async ({context}: LoaderFunctionArgs) => {
+  const { env } = context.cloudflare
+  const prisma = new PrismaClient({
+    datasourceUrl: env.DATABASE_URL,
+  }).$extends(withAccelerate())
+  const numberOfNotes = await prisma.notes.count()
+  return json({ numberOfNotes });
+};
+
 export default function Index() {
+  const { numberOfNotes } = useLoaderData<typeof loader>()
   return (
     <div className="font-sans p-4">
-      <h1 className="text-3xl">Welcome to Remix on Cloudflare</h1>
+      <h1 className="text-3xl">Welcome to Remix on Cloudflare {numberOfNotes}</h1>
       <ul className="list-disc mt-4 pl-6 space-y-2">
         <li>
           <a
