@@ -1,0 +1,19 @@
+{
+  "done": true,
+  "migration": {
+    "name": "mig_cq4f6lsdieq7g61ekoj0",
+    "operations": [
+      {
+        "drop_column": {
+          "table": "notes",
+          "column": "field1"
+        }
+      }
+    ]
+  },
+  "migrationType": "pgroll",
+  "name": "mig_cq4f6lsdieq7g61ekoj0",
+  "parent": "mig_cq428jrehsuqih1jv910",
+  "schema": "public",
+  "startedAt": "2024-07-06T07:33:44.29569Z"
+}
