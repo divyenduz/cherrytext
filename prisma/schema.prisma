@@ -23,4 +23,6 @@ model notes {
   search         String   @default("")
   status         String   @default("")
   comments       String   @default("")
+  text           String   @default("")
+  typos          String   @default("")
 }

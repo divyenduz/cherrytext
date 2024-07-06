@@ -1,0 +1,31 @@
+{
+  "done": true,
+  "migration": {
+    "name": "mig_cq4ja6sdieq7g61ekq90",
+    "operations": [
+      {
+        "add_column": {
+          "up": "''",
+          "table": "notes",
+          "column": {
+            "pk": false,
+            "name": "typos",
+            "type": "text",
+            "check": {
+              "name": "notes_xata_text_length_typos",
+              "constraint": "OCTET_LENGTH(\"typos\") <= 204800"
+            },
+            "unique": false,
+            "comment": "{\"xata.type\":\"text\"}",
+            "nullable": false
+          }
+        }
+      }
+    ]
+  },
+  "migrationType": "pgroll",
+  "name": "mig_cq4ja6sdieq7g61ekq90",
+  "parent": "mig_cq4ja44dieq7g61ekq80",
+  "schema": "public",
+  "startedAt": "2024-07-06T12:14:19.656999Z"
+}
