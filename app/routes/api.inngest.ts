@@ -7,8 +7,9 @@ function getHandler(args: LoaderFunctionArgs) {
     const { env } = args.context.cloudflare
 
     const handler = serve({
-        client: getInngestClient(env.DATABASE_URL, env.INNGEST_EVENT_KEY),
-        functions: getFunctions(env.DATABASE_URL, env.OPENAI_API_KEY, env.INNGEST_EVENT_KEY),
+        client: getInngestClient(env.DATABASE_URL, env.INNGEST_EVENT_KEY, env.INNGEST_DEV),
+        functions: getFunctions(env.DATABASE_URL, env.OPENAI_API_KEY, env.INNGEST_EVENT_KEY, env.INNGEST_DEV),
+        signingKey: env.INNGEST_SIGNING_KEY
     });
     return handler
 

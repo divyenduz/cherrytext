@@ -30,7 +30,11 @@ export const loader = async ({
   const prisma = new PrismaClient({
     datasourceUrl: env.DATABASE_URL,
   }).$extends(withAccelerate());
-  const inngest = getInngestClient(env.DATABASE_URL, env.INNGEST_EVENT_KEY);
+  const inngest = getInngestClient(
+    env.DATABASE_URL,
+    env.INNGEST_EVENT_KEY,
+    env.INNGEST_DEV
+  );
   const urlTokens = new URL(request.url);
   const url = urlTokens.searchParams.get("url");
   if (!url) {

@@ -1,8 +1,8 @@
 import { getInngestClient } from "./client";
 import OpenAI from 'openai'
 
-export const getFunctions = (databaseURL: string, openAPIKey: string, eventKey: string) => {
-  const inngest = getInngestClient(databaseURL, eventKey);
+export const getFunctions = (databaseURL: string, openAPIKey: string, eventKey: string, inngestDev: string) => {
+  const inngest = getInngestClient(databaseURL, eventKey, inngestDev);
 
   const findTypos = inngest.createFunction(
     { id: "find-typos" },
