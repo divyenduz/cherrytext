@@ -11,3 +11,5 @@ export const onRequest: PagesFunction<Env> = async (context) => {
     // @ts-expect-error
   })({ request: context.request, env: context.env });
 };
+
+export const onRequestInngest = onRequest
