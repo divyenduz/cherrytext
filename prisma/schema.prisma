@@ -22,4 +22,5 @@ model notes {
   typos          String   @default("")
   inngest_run_id String?  @default("")
   html           String   @default("")
+  html2          String   @default("")
 }

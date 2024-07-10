@@ -1,0 +1,18 @@
+{
+  "done": true,
+  "migration": {
+    "name": "sql_d6e07093c88a9b",
+    "operations": [
+      {
+        "sql": {
+          "up": "ALTER TABLE notes ADD COLUMN html2 text"
+        }
+      }
+    ]
+  },
+  "migrationType": "inferred",
+  "name": "sql_d6e07093c88a9b",
+  "parent": "mig_cq75i67cl6u44bfj0uu0",
+  "schema": "public",
+  "startedAt": "2024-07-10T10:16:35.653366Z"
+}
