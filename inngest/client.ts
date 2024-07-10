@@ -2,12 +2,12 @@ import { Inngest, InngestMiddleware } from "inngest";
 import { PrismaClient } from "@prisma/client/edge";
 import { withAccelerate } from "@prisma/extension-accelerate";
 
-export function getInngestClient(databaseURL: string, eventKey: string, inngestDev: string) {
+export function getInngestClient(env: Env) {
   const prismaMiddleware = new InngestMiddleware({
     name: "Prisma Middleware",
     init() {
       const prisma = new PrismaClient({
-        datasourceUrl: databaseURL,
+        datasourceUrl: env.DATABASE_URL,
       }).$extends(withAccelerate());
 
       return {
@@ -29,8 +29,8 @@ export function getInngestClient(databaseURL: string, eventKey: string, inngestD
 
   const inngest = new Inngest({
     id: "cherrytext",
-    eventKey,
-    isDev: inngestDev === '0' ? false : true,
+    eventKey: env.INNGEST_EVENT_KEY,
+    isDev: env.INNGEST_DEV === '0' ? false : true,
     middleware: [prismaMiddleware],
   });
 

@@ -3,7 +3,12 @@ import {
   ResizablePanel,
   ResizableHandle,
 } from "@/components/ui/resizable";
-import { LoaderFunctionArgs, json, redirect } from "@remix-run/cloudflare";
+import {
+  LoaderFunctionArgs,
+  MetaFunction,
+  json,
+  redirect,
+} from "@remix-run/cloudflare";
 import { useLoaderData } from "@remix-run/react";
 import { stripHtml } from "string-strip-html";
 import { getInngestClient } from "inngest/client";
@@ -18,61 +23,79 @@ import {
   CardTitle,
   CardDescription,
   CardContent,
-  CardFooter,
 } from "@/components/ui/card";
 
-export const loader = async ({
-  params,
-  request,
-  context,
-}: LoaderFunctionArgs) => {
+export const meta: MetaFunction = () => {
+  return [
+    { title: "CherryText.com" },
+    {
+      name: "description",
+      content:
+        "Automatically find typos and improvement suggestions in your docs.",
+    },
+  ];
+};
+
+export const loader = async ({ request, context }: LoaderFunctionArgs) => {
   const { env } = context.cloudflare;
   const prisma = new PrismaClient({
     datasourceUrl: env.DATABASE_URL,
   }).$extends(withAccelerate());
-  const inngest = getInngestClient(
-    env.DATABASE_URL,
-    env.INNGEST_EVENT_KEY,
-    env.INNGEST_DEV
-  );
+  const inngest = getInngestClient(env);
   const urlTokens = new URL(request.url);
   const url = urlTokens.searchParams.get("url");
   if (!url) {
     return redirect("/");
   }
 
-  const r = await fetch(url, {});
-  const rText = await r.text();
-
-  const text = stripHtml(rText).result;
-
-  const note = await prisma.notes.upsert({
+  const existingNote = await prisma.notes.findUnique({
     where: {
       url,
     },
-    create: {
+  });
+
+  if (existingNote) {
+    return json({
+      note: existingNote,
+    });
+  }
+
+  const note = await prisma.notes.create({
+    data: {
       url,
-      text,
       typos: "[]",
-    },
-    update: {
-      url,
-      text,
     },
   });
 
-  await inngest.send({
-    name: "app/find-typos",
+  const inngestRun = await inngest.send({
+    name: "app/get-text-from-html",
     data: {
       id: note.xata_id,
     },
   });
 
-  return json({ note, url, html: rText, text });
+  const updatedNote = await prisma.notes.update({
+    where: {
+      url,
+    },
+    data: {
+      inngest_run_id: inngestRun.ids[0],
+    },
+  });
+
+  return json({ note });
+};
+
+const safeJsonParse: (jsonStr: string) => string[] = (jsonStr: string) => {
+  try {
+    return JSON.parse(jsonStr);
+  } catch (e) {
+    return [];
+  }
 };
 
 export default function Index() {
-  const { note, url, html, text } = useLoaderData<typeof loader>();
+  const { note } = useLoaderData<typeof loader>();
   const [isDomReady, setIsDomReady] = useState(false);
   useEffect(() => {
     if (!isDomReady) {
@@ -82,27 +105,22 @@ export default function Index() {
 
   return (
     <div className="flex items-center justify-center p-4 font-sans">
-      <ResizablePanelGroup
-        direction="horizontal"
-        className="min-h-[800px] rounded-lg border border-red-600"
-      >
+      <ResizablePanelGroup direction="horizontal" className="min-h-[800px]">
         <ResizablePanel defaultSize={75}>
           {isDomReady ? (
-            <div className="h-full">{parse(DOMPurify.sanitize(html))}</div>
+            <div className="h-full">{parse(DOMPurify.sanitize(note.html))}</div>
           ) : (
             <div className="h-full">Loading...</div>
           )}
         </ResizablePanel>
         <ResizableHandle withHandle />
         <ResizablePanel defaultSize={25}>
-          <Card>
+          <Card className="border-none m-2">
             <CardHeader>
               <CardTitle>Typos</CardTitle>
               <CardDescription>Typos found by OpenAPI</CardDescription>
             </CardHeader>
-            <CardContent>
-              {(JSON.parse(note.typos) as string[]).join(", ")}
-            </CardContent>
+            <CardContent>{safeJsonParse(note.typos).join(", ")}</CardContent>
           </Card>
         </ResizablePanel>
       </ResizablePanelGroup>

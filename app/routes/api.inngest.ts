@@ -5,10 +5,9 @@ import { LoaderFunctionArgs } from "@remix-run/cloudflare";
 
 function getHandler(args: LoaderFunctionArgs) {
     const { env } = args.context.cloudflare
-
     const handler = serve({
-        client: getInngestClient(env.DATABASE_URL, env.INNGEST_EVENT_KEY, env.INNGEST_DEV),
-        functions: getFunctions(env.DATABASE_URL, env.OPENAI_API_KEY, env.INNGEST_EVENT_KEY, env.INNGEST_DEV),
+        client: getInngestClient(env),
+        functions: getFunctions(env),
         signingKey: env.INNGEST_SIGNING_KEY
     });
     return handler
