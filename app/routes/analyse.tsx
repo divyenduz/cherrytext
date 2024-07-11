@@ -9,8 +9,7 @@ import {
   json,
   redirect,
 } from "@remix-run/cloudflare";
-import { useLoaderData } from "@remix-run/react";
-import { stripHtml } from "string-strip-html";
+import { useLoaderData, useRevalidator } from "@remix-run/react";
 import { getInngestClient } from "inngest/client";
 import DOMPurify from "dompurify";
 import parse from "html-react-parser";
@@ -52,6 +51,9 @@ export const loader = async ({ request, context }: LoaderFunctionArgs) => {
     where: {
       url,
     },
+    include: {
+      note_html: true,
+    },
   });
 
   if (existingNote) {
@@ -64,6 +66,12 @@ export const loader = async ({ request, context }: LoaderFunctionArgs) => {
     data: {
       url,
       typos: "[]",
+      note_html: {
+        create: {
+          html: "",
+          text: "",
+        },
+      },
     },
   });
 
@@ -81,36 +89,67 @@ export const loader = async ({ request, context }: LoaderFunctionArgs) => {
     data: {
       inngest_run_id: inngestRun.ids[0],
     },
+    include: {
+      note_html: true,
+    },
   });
 
-  return json({ note });
+  return json({ note: updatedNote });
 };
 
-const safeJsonParse: (jsonStr: string) => string[] = (jsonStr: string) => {
+const safeJsonParse: (jsonStr: string) => string[] = (
+  jsonStr: string = "[]"
+) => {
   try {
     return JSON.parse(jsonStr);
   } catch (e) {
+    console.error(e);
     return [];
   }
 };
 
 export default function Index() {
+  const revalidator = useRevalidator();
   const { note } = useLoaderData<typeof loader>();
   const [isDomReady, setIsDomReady] = useState(false);
+
+  const isHTMLAdded = note.inngest_run_status.includes("HTML_ADDED");
+  const areTyposAdded = note.inngest_run_status.includes("TYPOS_ADDED");
+
   useEffect(() => {
     if (!isDomReady) {
       setIsDomReady(true);
     }
   }, []);
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (!isHTMLAdded || !areTyposAdded) {
+        console.log("revalidating...");
+        revalidator.revalidate();
+      } else {
+        console.log("all data fetched...");
+      }
+    }, 1000);
+    return () => {
+      return clearInterval(interval);
+    };
+  }, [note.inngest_run_status]);
+
+  const typos = safeJsonParse(note.typos);
+
   return (
     <div className="flex items-center justify-center p-4 font-sans">
       <ResizablePanelGroup direction="horizontal" className="min-h-[800px]">
         <ResizablePanel defaultSize={75}>
-          {isDomReady ? (
-            <div className="h-full">{parse(DOMPurify.sanitize(note.html))}</div>
+          {isHTMLAdded && isDomReady ? (
+            <div className="h-full">
+              {parse(DOMPurify.sanitize(note.note_html?.html || ""))}
+            </div>
           ) : (
-            <div className="h-full">Loading...</div>
+            <div className="h-screen flex items-center justify-center">
+              Beep bop beep... fetching the article
+            </div>
           )}
         </ResizablePanel>
         <ResizableHandle withHandle />
@@ -118,9 +157,13 @@ export default function Index() {
           <Card className="border-none m-2">
             <CardHeader>
               <CardTitle>Typos</CardTitle>
-              <CardDescription>Typos found by OpenAPI</CardDescription>
+              <CardDescription>
+                {areTyposAdded ? "Typos found by OpenAPI" : "Finding typos..."}
+              </CardDescription>
             </CardHeader>
-            <CardContent>{safeJsonParse(note.typos).join(", ")}</CardContent>
+            <CardContent>
+              {typos.length > 0 ? typos.join(", ") : "No typos found"}
+            </CardContent>
           </Card>
         </ResizablePanel>
       </ResizablePanelGroup>

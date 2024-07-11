@@ -1,0 +1,20 @@
+{
+  "done": true,
+  "migration": {
+    "name": "mig_cq7pfuosopa48aepfh30",
+    "operations": [
+      {
+        "rename_constraint": {
+          "to": "note_html_xata_text_length_text",
+          "from": "note_html_xata_text_length_test",
+          "table": "note_html"
+        }
+      }
+    ]
+  },
+  "migrationType": "pgroll",
+  "name": "mig_cq7pfuosopa48aepfh30",
+  "parent": "mig_cq7pfu8sopa48aepfh20",
+  "schema": "public",
+  "startedAt": "2024-07-11T08:29:48.374664Z"
+}

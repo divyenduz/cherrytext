@@ -1,1 +1,0 @@
-ALTER TABLE notes ADD COLUMN html2 TEXT;

@@ -1,0 +1,20 @@
+{
+  "done": true,
+  "migration": {
+    "name": "mig_cq7pfu8sopa48aepfh20",
+    "operations": [
+      {
+        "alter_column": {
+          "name": "text",
+          "table": "note_html",
+          "column": "test"
+        }
+      }
+    ]
+  },
+  "migrationType": "pgroll",
+  "name": "mig_cq7pfu8sopa48aepfh20",
+  "parent": "mig_cq7pf78sopa48aepfg50",
+  "schema": "public",
+  "startedAt": "2024-07-11T08:29:46.364772Z"
+}

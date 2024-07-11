@@ -1,0 +1,19 @@
+{
+  "done": true,
+  "migration": {
+    "name": "mig_cq76jipkemonin230keg",
+    "operations": [
+      {
+        "drop_column": {
+          "table": "notes",
+          "column": "hash"
+        }
+      }
+    ]
+  },
+  "migrationType": "pgroll",
+  "name": "mig_cq76jipkemonin230keg",
+  "parent": "sql_d6e07093c88a9b",
+  "schema": "public",
+  "startedAt": "2024-07-10T11:00:27.805212Z"
+}

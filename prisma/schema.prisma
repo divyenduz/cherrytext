@@ -12,15 +12,26 @@ datasource db {
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 model notes {
-  xata_id        String   @unique(map: "_pgroll_new_notes_xata_id_key") @default(dbgenerated("('rec_'::text || (xata_private.xid())::text)"))
+  xata_id            String     @unique(map: "_pgroll_new_notes_xata_id_key") @default(dbgenerated("('rec_'::text || (xata_private.xid())::text)"))
+  xata_version       Int        @default(0)
+  xata_createdat     DateTime   @default(now()) @db.Timestamptz(6)
+  xata_updatedat     DateTime   @default(now()) @db.Timestamptz(6)
+  url                String     @unique(map: "notes__pgroll_new_url_key")
+  typos              String     @default("")
+  inngest_run_id     String?    @default("")
+  inngest_run_status String     @default("")
+  note_html          note_html?
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model note_html {
+  xata_id        String   @unique(map: "_pgroll_new_note_html_xata_id_key") @default(dbgenerated("('rec_'::text || (xata_private.xid())::text)"))
   xata_version   Int      @default(0)
   xata_createdat DateTime @default(now()) @db.Timestamptz(6)
   xata_updatedat DateTime @default(now()) @db.Timestamptz(6)
-  url            String   @unique(map: "notes__pgroll_new_url_key")
-  hash           String   @default("")
-  text           String   @default("")
-  typos          String   @default("")
-  inngest_run_id String?  @default("")
   html           String   @default("")
-  html2          String   @default("")
+  text           String   @default("")
+  note_id        String   @unique(map: "note_html_note_id_unique")
+  notes          notes    @relation(fields: [note_id], references: [xata_id], onDelete: Cascade, onUpdate: NoAction, map: "note_id_link")
 }

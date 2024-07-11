@@ -1,0 +1,18 @@
+{
+  "done": true,
+  "migration": {
+    "name": "sql_b79f8ab0df8d46",
+    "operations": [
+      {
+        "sql": {
+          "up": "ALTER TABLE notes ALTER COLUMN html SET DEFAULT ''"
+        }
+      }
+    ]
+  },
+  "migrationType": "inferred",
+  "name": "sql_b79f8ab0df8d46",
+  "parent": "mig_cq76jodd91bfc7spl5bg",
+  "schema": "public",
+  "startedAt": "2024-07-10T11:04:38.717121Z"
+}

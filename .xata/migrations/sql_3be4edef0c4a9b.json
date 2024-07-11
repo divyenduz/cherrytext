@@ -1,0 +1,18 @@
+{
+  "done": true,
+  "migration": {
+    "name": "sql_3be4edef0c4a9b",
+    "operations": [
+      {
+        "sql": {
+          "up": "ALTER TABLE notes ALTER COLUMN inngest_run_status DROP DEFAULT"
+        }
+      }
+    ]
+  },
+  "migrationType": "inferred",
+  "name": "sql_3be4edef0c4a9b",
+  "parent": "mig_cq771rnh57ahlilrla40",
+  "schema": "public",
+  "startedAt": "2024-07-10T14:58:19.568616Z"
+}

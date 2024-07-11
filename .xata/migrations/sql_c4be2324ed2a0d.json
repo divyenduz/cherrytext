@@ -1,0 +1,18 @@
+{
+  "done": true,
+  "migration": {
+    "name": "sql_c4be2324ed2a0d",
+    "operations": [
+      {
+        "sql": {
+          "up": "ALTER TABLE bb_t9bov0t2k50jpcs5borl8ejnb0_s20jg0.notes ALTER COLUMN inngest_run_status SET DEFAULT '''''::text'"
+        }
+      }
+    ]
+  },
+  "migrationType": "inferred",
+  "name": "sql_c4be2324ed2a0d",
+  "parent": "sql_3be4edef0c4a9b",
+  "schema": "public",
+  "startedAt": "2024-07-10T15:00:20.616488Z"
+}

@@ -59,7 +59,7 @@ export default function Index() {
           className="min-w-80"
           type="url"
           name="url"
-          placeholder="Enter URL"
+          placeholder="Enter URL of your documentation page"
         />
         <Button type="submit">Submit</Button>
         {isMissingUrlError && (

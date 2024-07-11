@@ -1,0 +1,18 @@
+{
+  "done": true,
+  "migration": {
+    "name": "sql_a4d372eda5a45d",
+    "operations": [
+      {
+        "sql": {
+          "up": "ALTER TABLE bb_t9bov0t2k50jpcs5borl8ejnb0_s20jg0.note_html DROP CONSTRAINT note_html_xata_text_length_html"
+        }
+      }
+    ]
+  },
+  "migrationType": "inferred",
+  "name": "sql_a4d372eda5a45d",
+  "parent": "mig_cq7pipjq1j6arlfb7jng",
+  "schema": "public",
+  "startedAt": "2024-07-11T10:42:20.170123Z"
+}

@@ -20,6 +20,8 @@ export function getGetTextFromHTMLFn(
         return;
       }
 
+      let inngest_run_status = note.inngest_run_status;
+
       const html = await step.run("step/get-html-from-url", async () => {
         const r = await fetch(note.url, {});
         const html = await r.text();
@@ -31,16 +33,21 @@ export function getGetTextFromHTMLFn(
         return text;
       });
 
-      console.log({ htmlLength: html.length });
-
       const updatedNote = await step.run("step/add-text-to-note", async () => {
-        return await prisma.notes.update({
+        await prisma.notes.update({
           where: {
             xata_id: note.xata_id,
           },
           data: {
-            text,
-            html2: html,
+            inngest_run_status: inngest_run_status + "." + "HTML_ADDED",
+            note_html: {
+              update: {
+                data: {
+                  html,
+                  text,
+                },
+              },
+            },
           },
         });
       });

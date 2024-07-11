@@ -1,0 +1,23 @@
+{
+  "done": true,
+  "migration": {
+    "name": "mig_cq76jodd91bfc7spl5bg",
+    "operations": [
+      {
+        "alter_column": {
+          "up": "(SELECT CASE WHEN \"html2\" IS NULL THEN '' ELSE \"html2\" END)",
+          "down": "(SELECT CASE WHEN \"html2\" IS NULL THEN '' ELSE \"html2\" END)",
+          "name": "html",
+          "table": "notes",
+          "column": "html2",
+          "nullable": false
+        }
+      }
+    ]
+  },
+  "migrationType": "pgroll",
+  "name": "mig_cq76jodd91bfc7spl5bg",
+  "parent": "mig_cq76jl1kemonin230kgg",
+  "schema": "public",
+  "startedAt": "2024-07-10T11:00:49.925557Z"
+}
