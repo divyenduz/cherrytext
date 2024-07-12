@@ -172,6 +172,7 @@ export default function Index() {
 
   const isHTMLAdded = note.inngest_run_status.includes("HTML_ADDED");
   const areTyposAdded = note.inngest_run_status.includes("TYPOS_ADDED");
+  const isDone = isHTMLAdded && areTyposAdded;
 
   useEffect(() => {
     if (!isDomReady) {
@@ -208,43 +209,45 @@ export default function Index() {
         </ResizablePanel>
         <ResizableHandle withHandle />
         <ResizablePanel defaultSize={25}>
-          <Card className="border-none m-2">
-            <CardHeader>
-              <CardTitle>Re-analyse Document</CardTitle>
-              <CardDescription>
-                Re-fetch the HTML and analyse the document again
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Form
-                method="post"
-                className="flex flex-col items-center justify-center"
-              >
-                <Input
-                  hidden
-                  className="max-w-0"
-                  type="url"
-                  name="url"
-                  placeholder="Enter URL of your documentation page"
-                  value={note.url}
-                />
-                <Button
-                  onClick={(e) => {
-                    const r = confirm(
-                      "Are you sure that you watch to fetch the HTML and analyse this document again?"
-                    );
-                    if (!r) {
-                      e.preventDefault();
-                      return;
-                    }
-                  }}
-                  type="submit"
+          {isDone && (
+            <Card className="border-none m-2">
+              <CardHeader>
+                <CardTitle>Re-analyse Document</CardTitle>
+                <CardDescription>
+                  Re-fetch the HTML and analyse the document again
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Form
+                  method="post"
+                  className="flex flex-col items-center justify-center"
                 >
-                  Re-analyse
-                </Button>
-              </Form>
-            </CardContent>
-          </Card>
+                  <Input
+                    hidden
+                    className="max-w-0"
+                    type="url"
+                    name="url"
+                    placeholder="Enter URL of your documentation page"
+                    value={note.url}
+                  />
+                  <Button
+                    onClick={(e) => {
+                      const r = confirm(
+                        "Are you sure that you watch to fetch the HTML and analyse this document again?"
+                      );
+                      if (!r) {
+                        e.preventDefault();
+                        return;
+                      }
+                    }}
+                    type="submit"
+                  >
+                    Re-analyse
+                  </Button>
+                </Form>
+              </CardContent>
+            </Card>
+          )}
           <Card className="border-none m-2">
             <CardHeader>
               <CardTitle>Typos</CardTitle>

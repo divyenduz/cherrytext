@@ -43,8 +43,9 @@ export function getFindTyposFn(
               {
                 role: "system",
                 content: `Please find typos in this text, look at only single words and never two or more words together. 
-                      It can have combines words into a single word (aka keywords) like RoadmapPricingBlog, etc., these are not typos.
-                      Return the response as a JSON array string, just return the string so that it can be parsed with JSON.parse function.`,
+                      It can have combines words into a single word (aka keywords) like RoadmapPricingBlog, etc., these are not typos but must be read as 
+                      Roadmap, Pricing, Blog and checked for typos in each individual word.
+                      Return the response as a JSON array string so that it can be parsed with JSON.parse function.`,
               },
               { role: "user", content: note_html.text },
             ],
